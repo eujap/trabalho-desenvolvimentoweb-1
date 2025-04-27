@@ -15,7 +15,7 @@ criardb()
 def health_check():
     return {"status": "ok"}
 
-
+@app.get("/")
 def home():
     return {"mensagem": "API FastAPI rodando! Use /docs para ver a documentação."}
 
