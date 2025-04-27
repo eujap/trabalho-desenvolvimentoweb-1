@@ -36,9 +36,9 @@ cd SEU_REPOSITORIO
 
 ```
 ### 2. Crie e ative um ambiente virtual
-python -m venv venv
-source venv/bin/activate   # Linux/Mac
-venv\Scripts\activate      # Windows
+ - python -m venv venv
+ - source venv/bin/activate   # Linux/Mac
+ - venv\Scripts\activate      # Windows
 
 ### 3. Instale as dependências
 pip install -r requirements.txt
@@ -57,6 +57,7 @@ uvicorn main:app --reload+
 
 ### 5. Inicie Frontend
 Em outra aba do terminal:
+
 streamlit run app.py
  - Interface Web disponível em: http://localhost:8501
 
