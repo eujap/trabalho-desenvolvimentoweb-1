@@ -10,11 +10,12 @@ pergunta = st.text_input("Faça uma pergunta:")
 if st.button("Enviar"):
     if pergunta:
         with st.spinner("Consultando IA..."):
-            # Aqui você chama o seu próprio FastAPI local
-            response = httpx.post("http://127.0.0.1:8000/chat", json={"pergunta": pergunta})
-
-            if response.status_code == 200:
+            try:
+                response = httpx.post("http://127.0.0.1:8000/chat/", json={"pergunta": pergunta})
+                response.raise_for_status()
                 resposta = response.json()["resposta"]
                 st.success(resposta)
-            else:
-                st.error("Erro ao se comunicar com o servidor FastAPI.")
+            except httpx.HTTPStatusError as e:
+                st.error(f"Erro HTTP: {e.response.status_code} - {e.response.text}")
+            except Exception as e:
+                st.error(f"Erro geral: {str(e)}")
