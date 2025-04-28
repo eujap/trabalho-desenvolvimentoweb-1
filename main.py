@@ -86,6 +86,20 @@ def deletar(endereco_id: int, session: Session = Depends(get_session)):
 # CHAT
 @app.post("/chat/")
 async def chat(request:ChatRequest, session:  Session = Depends(get_session)):
-    texto_pergunta = request.pergunta
-    resposta = await perguntar_gemini(texto_pergunta)
-    return {"resposta": resposta}
+    texto = request.pergunta.lower()
+
+    if texto.startswith("crie um usuario"):
+        try:
+            partes = texto.split(" ")
+            nome = partes[4].capitalize()
+            email = partes[7]
+            idade = int(partes[-1])
+            novo_usuario = Usuario(nome=nome, email=email, idade=idade)
+            criar_usuario(session, novo_usuario)
+            return {"resposta": f"Usuario {nome} criado com sucesso!"}
+        except Exception as e:
+            return {"resposta": f"Erro ao criar usuario: {str(e)}"}
+
+    else:
+        resposta = await perguntar_gemini(request.pergunta)
+        return {"resposta": resposta}
