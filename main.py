@@ -4,12 +4,14 @@ from database import criardb, get_session
 from models import Usuario, Produto, Endereco
 from crud import criar_usuario, listar_usuarios, buscar_usuario, atualizar_usuario, deletar_usuario,criar_produto,criar_endereco,listar_endereco, listar_produtos,atualizar_produto,atualizar_endereco,deletar_endereco,deletar_produto,buscar_endereco,buscar_produto
 from chat import perguntar_gemini
-
+from pydantic import BaseModel
 
 app = FastAPI()
 
 criardb()
 
+class ChatRequest(BaseModel):
+    pergunta: str
 
 @app.get("/health")
 def health_check():
@@ -67,7 +69,7 @@ def criar(endereco: Endereco, session: Session = Depends(get_session)):
 
 @app.get("/enderecos/")
 def listar(session: Session = Depends(get_session)):
-    return listar_enderecos(session)
+    return listar_endereco(session)
 
 @app.get("/enderecos/{endereco_id}")
 def buscar(endereco_id: int, session: Session = Depends(get_session)):
@@ -83,6 +85,7 @@ def deletar(endereco_id: int, session: Session = Depends(get_session)):
 
 # CHAT
 @app.post("/chat/")
-async def chat(pergunta: str = Body(...)):
-    resposta = await perguntar_gemini(pergunta)
+async def chat(request:ChatRequest, session:  Session = Depends(get_session)):
+    texto_pergunta = request.pergunta
+    resposta = await perguntar_gemini(texto_pergunta)
     return {"resposta": resposta}
